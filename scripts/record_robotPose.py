@@ -8,7 +8,6 @@ import ipdb
 from birl_pydmps import util
 
 
-
 def main():
     moveit_commander.roscpp_initialize(sys.argv)
     rospy.init_node('get_robot_state', anonymous=True)
