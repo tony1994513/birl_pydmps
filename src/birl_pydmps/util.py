@@ -7,6 +7,12 @@ import numpy as np
 import copy
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from tf.transformations import (
+    translation_matrix,
+    quaternion_matrix,
+    translation_from_matrix,
+    quaternion_from_matrix,
+)
 
 def plot_3d_demo(mat):
     fig = plt.figure(0,figsize=(10,8))
