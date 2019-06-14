@@ -18,10 +18,12 @@ def main():
     raw_data = np.load('record_demo.npy')
     # ipdb.set_trace()
     filtered_data = gaussian_filter1d(raw_data.T, sigma=5).T
+    # filtered_data = util.filter_static_points(filtered_data,0.03)
     marker_pub = rospy.Publisher("/iiwa/visualization_marker", Marker, queue_size=100)
     rospy.sleep(0.5)
     rgba_tuple = [random.uniform(0, 1), random.uniform(0, 1), random.uniform(0.5, 1), 1]
     for idx, point in enumerate(filtered_data):
+        # ipdb.set_trace()
         now_pose = Pose()
         now_pose.position.x = point[0]
         now_pose.position.y = point[1]

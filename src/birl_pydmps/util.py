@@ -25,11 +25,11 @@ def plot_3d_demo(mat):
     ax.scatter(mat[-1, 0], mat[-1, 1], mat[-1, 2], marker="^",s=400,color="r")
     plt.show()
 
-def filter_static_points(mat):
+def filter_static_points(mat,dis):
     last = mat[0]
     new_mat = [last]
     for idx in range(mat.shape[0]):
-        if np.linalg.norm(mat[idx]-last) < 0.01:
+        if np.linalg.norm(mat[idx]-last) < dis:
             pass
         else:
             new_mat.append(mat[idx])
@@ -79,8 +79,8 @@ def set_trajectory_speed(traj, speed):
        # Assign the modified points to the new trajectory
        new_traj.joint_trajectory.points = points
     #    ipdb.set_trace()
-       plt.plot(time_list)
-       plt.show()
+       # plt.plot(time_list)
+       # plt.show()
        # Return the new trajecotry
        return new_traj
    

@@ -14,9 +14,10 @@ from birl_pydmps import util
 
 def main():
     rospy.init_node('cartesian_move_test', anonymous=True)
-    # raw_data = np.load('record_demo.npy')
-    raw_data = np.load('./demonstrations/triangle.npy')
+    raw_data = np.load('record_demo.npy')
+    # raw_data = np.load('./demonstrations/record_demo_1.npy')
     filtered_data = gaussian_filter1d(raw_data.T, sigma=5).T
+    filtered_data = util.filter_static_points(filtered_data,0.03)
     # util.plot_3d_demo(filtered_data)
 
     # moveit
@@ -31,17 +32,19 @@ def main():
     # joint_command = [0.11133063584566116, 0.5712737441062927,
     # -0.09774867445230484, -1.7133415937423706, -0.036780450493097305, -0.5433750152587891, 0.17699939012527466]
 
-    # util.speed_set(group,0.5)
+    util.speed_set(group,0.03)
     # plan = util.fK_point_calculate(group,JointAngle=joint_command)
     # util.execute_plan(group,plan) 
 
-    # plan = util.iK_point_calculate(group,point=filtered_data[0])
-    # util.execute_plan(group,plan)    
+    for point in filtered_data:
+        plan = util.iK_point_calculate(group,point=point)
+        util.execute_plan(group,plan)    
+    # #     ipdb.set_trace()    
 
-    plan = util.ik_cartesain_path(group, filtered_data)
-    # 
-    plan = util.set_trajectory_speed(plan, 0.2)
-    ipdb.set_trace()
+    # plan = util.ik_cartesain_path(group, filtered_data[:,:])
+    # # 
+    # # plan = util.set_trajectory_speed(plan, 0.2)
+    # # ipdb.set_trace()
     
     util.execute_plan(group,plan)
     
