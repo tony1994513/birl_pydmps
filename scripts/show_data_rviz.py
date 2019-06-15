@@ -16,8 +16,9 @@ import random
 def main():
     rospy.init_node('test', anonymous=True)
     raw_data = np.load('record_demo.npy')
+    # ipdb.set_trace()
     filtered_data = gaussian_filter1d(raw_data.T, sigma=5).T
-    marker_pub = rospy.Publisher("/visualization_marker", Marker, queue_size=100)
+    marker_pub = rospy.Publisher("/iiwa/visualization_marker", Marker, queue_size=100)
     rospy.sleep(0.5)
     rgba_tuple = [random.uniform(0, 1), random.uniform(0, 1), random.uniform(0.5, 1), 1]
     for idx, point in enumerate(filtered_data):

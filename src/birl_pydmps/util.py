@@ -2,6 +2,8 @@ import rospy
 from visualization_msgs.msg import (
     Marker
 )
+from moveit_msgs.msg import RobotTrajectory
+from trajectory_msgs.msg import JointTrajectoryPoint
 from geometry_msgs.msg import Point,Pose
 import numpy as np
 import copy
@@ -13,6 +15,7 @@ from tf.transformations import (
     translation_from_matrix,
     quaternion_from_matrix,
 )
+import ipdb
 
 def plot_3d_demo(mat):
     fig = plt.figure(0,figsize=(10,8))
@@ -32,6 +35,55 @@ def filter_static_points(mat):
             new_mat.append(mat[idx])
             last = mat[idx] 
     return np.array(new_mat)
+
+def set_trajectory_speed(traj, speed):
+       # Create a new trajectory object
+       new_traj = RobotTrajectory()
+       
+       # Initialize the new trajectory to be the same as the input trajectory
+       new_traj.joint_trajectory = traj.joint_trajectory
+       
+       # Get the number of joints involved
+       n_joints = len(traj.joint_trajectory.joint_names)
+       
+       # Get the number of points on the trajectory
+       n_points = len(traj.joint_trajectory.points)
+        
+       # Store the trajectory points
+       points = list(traj.joint_trajectory.points)
+       
+       # Cycle through all points and joints and scale the time from start,
+       # as well as joint speed and acceleration
+       time_list = []
+       for i in range(n_points):
+           point = JointTrajectoryPoint()
+           
+           # The joint positions are not scaled so pull them out first
+           point.positions = traj.joint_trajectory.points[i].positions
+
+           # Next, scale the time_from_start for this point
+           point.time_from_start = traj.joint_trajectory.points[i].time_from_start
+           t = rospy.Time(point.time_from_start.secs, point.time_from_start.nsecs)
+        #    ipdb.set_trace()
+           time_list.append(t.to_time())
+
+           # Initialize the joint velocities for this point
+           point.velocities = [speed] * n_joints
+           
+           # Get the joint accelerations for this point
+           point.accelerations = [speed / 4.0] * n_joints
+        
+           # Store the scaled trajectory point
+           points[i] = point
+
+       # Assign the modified points to the new trajectory
+       new_traj.joint_trajectory.points = points
+    #    ipdb.set_trace()
+       plt.plot(time_list)
+       plt.show()
+       # Return the new trajecotry
+       return new_traj
+   
 
 def send_traj_point_marker(marker_pub, pose, id, rgba_tuple):
     marker = Marker()

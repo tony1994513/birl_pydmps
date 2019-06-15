@@ -16,14 +16,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 import numpy as np
 
-from pydmps.cs import CanonicalSystem
+from cs import CanonicalSystem
 
 
 class DMPs(object):
     """Implementation of Dynamic Motor Primitives,
     as described in Dr. Stefan Schaal's (2002) paper."""
 
-    def __init__(self, n_dmps, n_bfs, dt=.01,
+    def __init__(self, n_dmps, n_bfs, dt=.01,repeat_times=1,
                  y0=0, goal=1, w=None,
                  ay=None, by=None, **kwargs):
         """

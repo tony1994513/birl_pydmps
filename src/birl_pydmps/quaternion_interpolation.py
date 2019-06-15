@@ -4,8 +4,8 @@ from pyquaternion import Quaternion
 
 def interpolate_pose_using_slerp(command_matrix):
 
-    pos_mat = command_matrix[:, pxyz_idx].copy()
-    quat_mat = command_matrix[:, qxyzw_idx].copy()
+    pos_mat = command_matrix[:, 0:3].copy()
+    quat_mat = command_matrix[:, 3:].copy()
 
     distance_mat = numpy.linalg.norm(pos_mat[1:]-pos_mat[:-1], axis=1)
     steps = numpy.cumsum(distance_mat, axis=0)
@@ -38,7 +38,7 @@ def interpolate_pose_using_slerp(command_matrix):
         i.elements[3], 
         i.elements[0]] for i in interpolated_q]
 
-    command_matrix[:, qxyzw_idx] = interpolated_mat
+    command_matrix[:, 3:] = interpolated_mat
     return command_matrix
 
 def plot_command_matrix_in_matplotlib(command_matrix, control_dimensions, title):
